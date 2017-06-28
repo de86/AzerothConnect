@@ -1,41 +1,9 @@
-$(document).ready(function(){
-  /*// Configuration Options:
-  // CSS selector of the UUID
-  var UUIDselector = 'td[title="UUID"]+td+td>div';
+function AzerothConnect(config) {
 
-  // CSS selector of the timestamp
-  var timestampSelector = 'td[title="@timestamp"]+td+td>div';
+    const DURATION = 3;
+    const URLARGS = ["app", "uuid", "date", "hh", "mm", "ss", "duration"];
 
-  // CSS selector of the app name
-  var appNameSelector = 'td[title="application"]+td+td>div>mark';
-
-  // Base URL of Azeroth
-  var azerothBaseUrl = 'http://xmldev01.cdlis.co.uk:8090'
-
-  // Strata Audit path
-  var strataAuditPath = "/strataaudit"
-*/
-/*  // Duration of time to query Strata Audit (Should be as small as possible)
-  const DURATION = 3;
-
-  // Names of the args used in the Azeroth URL
-  const azerothUrlArgs = ["app", "uuid", "date", "hh", "mm", "ss", "duration"];*/
-
-  var config = {
-    timestampSelector: 'td[title="@timestamp"]+td+td>div',
-    appNameSelector: 'td[title="application"]+td+td>div>mark',
-    azerothBaseUrl: 'http://xmldev01.cdlis.co.uk:8090',
-    strataAuditPath: 'http://xmldev01.cdlis.co.uk:8090'
-  }
-
-  var UUIDselector = 'td[title="UUID"]+td+td>div',
-
-  var azerothConnect = new AzerothConnect(config);
-
-  $(document).on('click', UUIDselector, azerothConnect.query());
-
-  /*// CSS to be injected into the head of the DOM
-  var headCss = '<style id="azeroth-connect">\
+    var headCss = '<style id="azeroth-connect">\
     ' + UUIDselector + '{\
       color: #33d;\
       text-decoration: underline; }\
@@ -44,11 +12,12 @@ $(document).ready(function(){
       color: #119; }\
     ' + UUIDselector + ':active {\
       color: #55f; }';
-  
-  $('head').append(headCss);*/
 
-/*
-  $(document).on('click', UUIDselector, function(){
+    $('head').append(headCss);
+}
+
+
+AzerothConnect.prototype.query = function () {
     var uuid = this.innerHTML;
     var appName = $(this).closest("tbody").find(appNameSelector).first().html();
     var timestamp = $(this).closest("tbody").find(timestampSelector).first().html();
@@ -62,7 +31,54 @@ $(document).ready(function(){
     var azerothQueryUrl = getAzerothUrl([appName, uuid, date, timeAsArray[0], timeAsArray[1], timeAsArray[2], DURATION]);
 
     window.open(azerothQueryUrl, '_blank');
-  });
+}
+
+AzerothConnect.prototype.
+
+AzerothConnect.prototype.
+
+AzerothConnect.prototype.
+
+AzerothConnect.prototype.
+
+AzerothConnect.prototype.
+
+
+// Duration of time to query Strata Audit (Should be as small as possible)
+  //const DURATION = 3;
+
+  // Names of the args used in the Azeroth URL
+  //const azerothUrlArgs = ["app", "uuid", "date", "hh", "mm", "ss", "duration"];
+
+// CSS to be injected into the head of the DOM
+  var headCss = '<style id="azeroth-connect">\
+    ' + UUIDselector + '{\
+      color: #33d;\
+      text-decoration: underline; }\
+    ' + UUIDselector + ':hover {\
+      cursor: pointer;\
+      color: #119; }\
+    ' + UUIDselector + ':active {\
+      color: #55f; }';
+  
+  $('head').append(headCss);
+
+
+  /*$(document).on('click', UUIDselector, function(){
+    var uuid = this.innerHTML;
+    var appName = $(this).closest("tbody").find(appNameSelector).first().html();
+    var timestamp = $(this).closest("tbody").find(timestampSelector).first().html();
+    var dateAsArray = timestamp.split(/[\s,]+/);
+
+    // [0] = HH, [1] = MM, [2] = SS, [3] = SSV (milliseconds to three decimal points)
+    var timeAsArray = dateAsArray.splice(3, 1)[0].split(/:|\./);
+
+    var date = getDate(dateAsArray);
+
+    var azerothQueryUrl = getAzerothUrl([appName, uuid, date, timeAsArray[0], timeAsArray[1], timeAsArray[2], DURATION]);
+
+    window.open(azerothQueryUrl, '_blank');
+  });*/
 
 
   // Returns a string of arguments to be passed in the Azeroth URL
@@ -122,5 +138,4 @@ $(document).ready(function(){
   // Returns a string with a padded zero if necessary
   function zeroPad (numToPad) {
     return parseInt(numToPad) < 10 ? "0" + numToPad : numToPad;
-  };*/
-});
+  };
