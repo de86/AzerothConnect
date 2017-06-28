@@ -16,7 +16,10 @@
   "content_scripts": [
     {
       "matches": ["http://kibana4-ws.cdlis.co.uk/*"],
-      "js": ["jquery-3.2.1.min.js", "content.js"]
+      "js": [
+        "jquery-3.2.1.min.js",
+        "main.js",
+        "AzerothConnect.js"]
     }
   ]
 }

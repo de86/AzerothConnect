@@ -1,141 +1,128 @@
 function AzerothConnect(config) {
-
-    const DURATION = 3;
-    const URLARGS = ["app", "uuid", "date", "hh", "mm", "ss", "duration"];
-
-    var headCss = '<style id="azeroth-connect">\
-    ' + UUIDselector + '{\
-      color: #33d;\
-      text-decoration: underline; }\
-    ' + UUIDselector + ':hover {\
-      cursor: pointer;\
-      color: #119; }\
-    ' + UUIDselector + ':active {\
-      color: #55f; }';
-
-    $('head').append(headCss);
-}
-
-
-AzerothConnect.prototype.query = function () {
-    var uuid = this.innerHTML;
-    var appName = $(this).closest("tbody").find(appNameSelector).first().html();
-    var timestamp = $(this).closest("tbody").find(timestampSelector).first().html();
-    var dateAsArray = timestamp.split(/[\s,]+/);
-
-    // [0] = HH, [1] = MM, [2] = SS, [3] = SSV (milliseconds to three decimal points)
-    var timeAsArray = dateAsArray.splice(3, 1)[0].split(/:|\./);
-
-    var date = getDate(dateAsArray);
-
-    var azerothQueryUrl = getAzerothUrl([appName, uuid, date, timeAsArray[0], timeAsArray[1], timeAsArray[2], DURATION]);
-
-    window.open(azerothQueryUrl, '_blank');
-}
-
-AzerothConnect.prototype.
-
-AzerothConnect.prototype.
-
-AzerothConnect.prototype.
-
-AzerothConnect.prototype.
-
-AzerothConnect.prototype.
-
-
-// Duration of time to query Strata Audit (Should be as small as possible)
-  //const DURATION = 3;
-
-  // Names of the args used in the Azeroth URL
-  //const azerothUrlArgs = ["app", "uuid", "date", "hh", "mm", "ss", "duration"];
-
-// CSS to be injected into the head of the DOM
-  var headCss = '<style id="azeroth-connect">\
-    ' + UUIDselector + '{\
-      color: #33d;\
-      text-decoration: underline; }\
-    ' + UUIDselector + ':hover {\
-      cursor: pointer;\
-      color: #119; }\
-    ' + UUIDselector + ':active {\
-      color: #55f; }';
+  // Config object passed at time of creation
+  this.appNameSelector = config.appNameSelector;
+  this.azerothBaseUrl = config.azerothBaseUrl;
+  this.strataAuditPath = config.strataAuditPath;
+  this.timestampSelector = config.timestampSelector;
+  this.UUIDselector = config.UUIDselector;
   
+  // Duration of time to search the Live audit DB. should be kept low.
+  this.DURATION = 3;
+
+  // Array of args required to be passed to Azeroth in the generated URL.
+  // Args passed to geAzerothURL() must correspond to this array.
+  this.URLARGS = ["app", "uuid", "date", "hh", "mm", "ss", "duration"];
+
+  this.injectStyles();
+}
+
+/**
+ * Gathers relevant information from the clicked UUID and opens a new
+ * window to Azeroth. This allows us to view the live XML for the 
+ * specific live error we are looking at.
+ */
+AzerothConnect.prototype.query = function (event) {
+  var clickedUUID = event.target
+  var uuid = clickedUUID.innerHTML;
+  var appName = $(clickedUUID).closest("tbody").find(this.appNameSelector).first().html();
+  var timestamp = $(clickedUUID).closest("tbody").find(this.timestampSelector).first().html();
+  var dateAsArray = timestamp.split(/[\s,]+/);
+
+  // [0] = HH, [1] = MM, [2] = SS, [3] = SSV (milliseconds to three decimal points)
+  var timeAsArray = dateAsArray.splice(3, 1)[0].split(/:|\./);
+
+  var date = this.getDate(dateAsArray);
+
+  var azerothQueryUrl = this.getAzerothUrl([appName, uuid, date, timeAsArray[0], timeAsArray[1], timeAsArray[2], this.DURATION]);
+
+  window.open(azerothQueryUrl, '_blank');
+};
+
+
+/**
+ * Injects the CSS that styles the UUIDs as a link
+ */
+AzerothConnect.prototype.injectStyles = function () {
+  var headCss = '<style id="azeroth-connect">\
+    ' + this.UUIDselector + '{\
+      color: #33d;\
+      text-decoration: underline; }\
+    ' + this.UUIDselector + ':hover {\
+      cursor: pointer;\
+      color: #119; }\
+    ' + this.UUIDselector + ':active {\
+      color: #55f; }';
+
   $('head').append(headCss);
+};
 
 
-  /*$(document).on('click', UUIDselector, function(){
-    var uuid = this.innerHTML;
-    var appName = $(this).closest("tbody").find(appNameSelector).first().html();
-    var timestamp = $(this).closest("tbody").find(timestampSelector).first().html();
-    var dateAsArray = timestamp.split(/[\s,]+/);
+/**
+ * Given an array of values this returns a string of arguments to be passed in
+ * the Azeroth URL. Arg values must correspond to the azerothURLArgs config array
+ */
+AzerothConnect.prototype.getArgsString = function (urlArgValues) {
+  var argsAsString = "?";
+  var numOfArgs = this.URLARGS.length;
 
-    // [0] = HH, [1] = MM, [2] = SS, [3] = SSV (milliseconds to three decimal points)
-    var timeAsArray = dateAsArray.splice(3, 1)[0].split(/:|\./);
-
-    var date = getDate(dateAsArray);
-
-    var azerothQueryUrl = getAzerothUrl([appName, uuid, date, timeAsArray[0], timeAsArray[1], timeAsArray[2], DURATION]);
-
-    window.open(azerothQueryUrl, '_blank');
-  });*/
-
-
-  // Returns a string of arguments to be passed in the Azeroth URL
-  // given an array of values. Arg values must correspond to the
-  // azerothURLArgs array
-  function getArgsString (urlArgValues) {
-    var argsAsString = "?";
-
-    azerothUrlArgs.forEach(function(arg, i) {
+    this.URLARGS.forEach(function(arg, i) {
       argsAsString += arg +"=" + urlArgValues[i];
 
-      if ( i < (azerothUrlArgs.length -1) ) {
+      if ( i < (numOfArgs -1) ) {
         argsAsString += "&";
       };
     });
 
     return argsAsString;
-  };
+};
 
 
-  // Returns the full query URL as a string given an array of arg values.
-  // Arg values must correspond to the azerothURLArgs array
-  function getAzerothUrl (azerothUrlArgs) {
-    azerothUrlArgsAsString = getArgsString (azerothUrlArgs);
-
-    return azerothBaseUrl + strataAuditPath + azerothUrlArgsAsString;
-  };
-
-
-  // Returns a date string in the format of "YYYY-MM-DD"
-  function getDate (dateAsArray) {
-    month = getMonthFromString(dateAsArray[0]);
-    day = getDayFromString(dateAsArray[1]);
-    year = dateAsArray[2];
-
-    return year + "-" + month + "-" + day;
-  };
+/**
+ * Returns the full query URL as a string given an array of arg values.
+ * Arg values must correspond to the azerothURLArgs array
+ */
+AzerothConnect.prototype.getAzerothUrl = function (azerothUrlArgs) {
+  var azerothUrlArgsAsString = this.getArgsString(azerothUrlArgs);
+  return this.azerothBaseUrl + this.strataAuditPath + azerothUrlArgsAsString;
+};
 
 
-  // Returns the Month number given a month name
-  function getMonthFromString(mon) {
-    // Arbitrary day and year used as we are only interested in the Month
-    monthNumber = new Date(Date.parse(mon +" 1, 2000")).getMonth() + 1;
-    return zeroPad(monthNumber);
-  };
+/**
+ * Returns the given date as a string in the format of "YYYY-MM-DD"
+ */
+AzerothConnect.prototype.getDate = function (dateAsArray) {
+  var month = this.getMonthFromString(dateAsArray[0]);
+  var day = this.getDayFromString(dateAsArray[1]);
+  var year = dateAsArray[2];
+
+  return year + "-" + month + "-" + day;
+};
 
 
-  // Returns a day number given a string with number suffix 
-  // eg. 1st returns 01
-  function getDayFromString(day) {
-    // Remove suffix from dates day number as Azeroth needs a clean number 
-    var dayNum = day.replace(/(st)+|(nd)+|(rd)+|(th)+/, "");
-    return zeroPad(dayNum);
-  };
+/**
+ * Returns the Month number given a month name
+ */
+AzerothConnect.prototype.getMonthFromString = function (monthName) {
+  // Arbitrary day and year used as we are only interested in the Month
+  var monthNumber = new Date(Date.parse(monthName +" 1, 2000")).getMonth() + 1;
+  return this.zeroPad(monthNumber);
+};
 
 
-  // Returns a string with a padded zero if necessary
-  function zeroPad (numToPad) {
-    return parseInt(numToPad) < 10 ? "0" + numToPad : numToPad;
-  };
+/**
+ * Returns the day number given a day date string with a number suffix 
+ * eg. 1st returns 01
+ */
+AzerothConnect.prototype.getDayFromString = function (day) {
+  // Remove suffix from dates day number as Azeroth needs a clean number 
+  var dayNum = day.replace(/(st)+|(nd)+|(rd)+|(th)+/, "");
+  return this.zeroPad(dayNum);
+};
+
+
+/**
+ * Returns a number as a string with a padded zero if necessary
+ */
+AzerothConnect.prototype.zeroPad = function (numToPad) {
+  return parseInt(numToPad) < 10 ? "0" + numToPad : numToPad;
+};
