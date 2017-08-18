@@ -5,7 +5,7 @@ $(document).ready(function () {
     timestampSelector: 'td[title="@timestamp"]+td+td>div',
     appNameSelector: 'td[title="application"]+td+td>div>mark',
     azerothBaseUrl: 'http://xmldev01.cdlis.co.uk:8090',
-    strataAuditPath: '/strataaudit'
+    strataAuditPath: '/strataSearch'
   }
 
   // Create new AzerothConnect object

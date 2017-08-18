@@ -11,10 +11,11 @@ function AzerothConnect(config) {
 
   // Array of args required to be passed to Azeroth in the generated URL.
   // Args passed to geAzerothURL() must correspond to this array.
-  this.URLARGS = ["app", "uuid", "date", "hh", "mm", "ss", "duration"];
+  this.URLARGS = ["appname", "uuid", "date", "hh", "mm", "ss", "duration"];
 
   this.injectStyles();
 }
+
 
 /**
  * Gathers relevant information from the clicked UUID and opens a new
